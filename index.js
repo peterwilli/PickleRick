@@ -3,20 +3,37 @@ var bf = require("bloomfilter"),
     fnv_1a = bf.fnv_1a,
     fnv_1a_b = bf.fnv_1a_b;
 var fs = require('fs');
+var path = require('path');
 const PickleRick = require('./pickle-rick')
 
 const task = process.argv[2];
 
+function getExtension(filename) {
+    var ext = path.extname(filename||'').split('.');
+    return ext[ext.length - 1];
+}
+
 if(task === 'compress') {
   var fname = process.argv[3]
-  var pickleRick = new PickleRick(64 * 256, 2)
+  var pickleRick = new PickleRick(128 * 256, 3)
   var data = fs.readFileSync(fname)
-  console.log(data);
   pickleRick.compress(data)
-  console.log(data.length);
-  console.log(JSON.stringify(pickleRick.toJSON()).length);
+  var jsonStr = JSON.stringify(pickleRick.toJSON())
+  console.log(`Original data length: ${data.length} | PickleRick length: ${jsonStr.length} | Compression ratio: ${(jsonStr.length / data.length).toFixed(2)}`);
+  fs.writeFileSync(fname + ".prk", jsonStr)
 
+  var data = pickleRick.decompress()
+  fs.writeFileSync(fname + ".prk2", data)
+}
+
+if(task === 'decompress') {
   console.log("trying to decompress..");
-  data = pickleRick.decompress()
-  console.log(data);
+  var fname = process.argv[3]
+  var dest = fname.substring(0, fname.length - 4)
+  var originalFileExt = getExtension(dest)
+  dest = dest.substring(0, dest.length - originalFileExt.length) + `dec.${originalFileExt}`
+  var pickleRick = PickleRick.fromJSON(JSON.parse(fs.readFileSync(fname).toString()))
+  var data = pickleRick.decompress()
+  fs.writeFileSync(dest, data)
+  console.log(`Written decompressed data to ${dest}...`);
 }
