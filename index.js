@@ -15,7 +15,7 @@ function getExtension(filename) {
 
 if(task === 'compress') {
   var fname = process.argv[3]
-  var pickleRick = new PickleRick(128 * 256, 3)
+  var pickleRick = new PickleRick(16 * 256, 6)
   var data = fs.readFileSync(fname)
   pickleRick.compress(data)
   var jsonStr = JSON.stringify(pickleRick.toJSON())

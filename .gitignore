@@ -1,3 +1,7 @@
+# Own settings
+test_files/*.prk
+test_files/*.prk2
+
 # Logs
 logs
 *.log

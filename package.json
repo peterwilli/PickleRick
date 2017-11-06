@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "bloomfilter": "^0.0.16"
+    "bloomfilter": "git+https://github.com/jacobgreenleaf/bloomfilter.js.git#055c83cbc81e76f342a4b3d4a95eb7e63ee05d73"
   },
   "devDependencies": {},
   "scripts": {
